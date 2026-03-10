@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investment Banking Playbook — Shaurya Singhal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0D1B2A;
+    --navy-mid: #162436;
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --cream: #F5F0E8;
+    --cream-dark: #EDE5D5;
+    --white: #FAFAF8;
+    --text-muted: #7A8A9A;
+    --accent-red: #B84040;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    padding: 80px 60px 80px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-right::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--navy) 0%, transparent 50%, rgba(201,168,76,0.15) 100%);
+  }
+
+  .hero-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.35;
+    filter: grayscale(30%) contrast(1.1);
+  }
+
+  /* Gold line decoration */
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+  .eyebrow-line {
+    width: 48px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .eyebrow-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .hero-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 5.5vw, 80px);
+    font-weight: 900;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+
+  .hero-headline em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-headline .outline-text {
+    -webkit-text-stroke: 1.5px rgba(255,255,255,0.3);
+    color: transparent;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.65);
+    margin-top: 28px;
+    margin-bottom: 48px;
+    max-width: 420px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  .hero-sub strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  /* CTA cluster */
+  .cta-cluster {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.8s;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    padding: 18px 36px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.25s, transform 0.2s;
+    position: relative;
+  }
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .btn-secondary:hover { color: var(--white); }
+  .btn-secondary svg { transition: transform 0.2s; }
+  .btn-secondary:hover svg { transform: translateX(4px); }
+
+  /* Floating price tag */
+  .price-badge {
+    position: absolute;
+    bottom: 80px;
+    right: -20px;
+    background: var(--gold);
+    color: var(--navy);
+    padding: 24px 32px;
+    z-index: 10;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    animation: fadeLeft 0.8s ease forwards 1s;
+    opacity: 0;
+  }
+  .price-badge .amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1;
+    display: block;
+  }
+  .price-badge .label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+
+  /* ─── TICKER STRIP ─── */
+  .ticker {
+    background: var(--gold);
+    color: var(--navy);
+    padding: 14px 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .ticker-inner {
+    display: flex;
+    gap: 0;
+    animation: ticker 25s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .ticker-item::after {
+    content: '◆';
+    font-size: 8px;
+    opacity: 0.5;
+  }
+
+  /* ─── SOCIAL PROOF ─── */
+  .proof-bar {
+    background: var(--navy-mid);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 40px 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 32px;
+  }
+
+  .proof-item {
+    text-align: center;
+  }
+  .proof-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .proof-label {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  .proof-divider {
+    width: 1px;
+    height: 50px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* ─── PAIN SECTION ─── */
+  .pain-section {
+    padding: 120px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    position: relative;
+  }
+
+  .pain-section::before {
+    content: '"';
+    position: absolute;
+    top: 60px;
+    right: 80px;
+    font-family: 'Playfair Display', serif;
+    font-size: 300px;
+    color: rgba(201,168,76,0.04);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .pain-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 3.5vw, 52px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  .pain-headline em {
+    font-style: italic;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .pain-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .pain-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 24px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    transition: border-color 0.3s, background 0.3s;
+    cursor: default;
+  }
+  .pain-item:hover {
+    border-color: rgba(201,168,76,0.3);
+    background: rgba(201,168,76,0.04);
+  }
+
+  .pain-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(184,64,64,0.15);
+    border: 1px solid rgba(184,64,64,0.3);
+    font-size: 16px;
+  }
+
+  .pain-item-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.7);
+  }
+  .pain-item-text strong {
+    color: var(--white);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  /* ─── WHAT YOU GET ─── */
+  .offer-section {
+    background: var(--cream);
+    color: var(--navy);
+    padding: 120px 80px;
+  }
+
+  .offer-section .section-label {
+    color: var(--gold);
+  }
+  .offer-section .section-label::before {
+    background: var(--gold);
+  }
+
+  .offer-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 3.5vw, 52px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 64px;
+    max-width: 600px;
+  }
+
+  .offer-headline em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(13,27,42,0.08);
+  }
+
+  .module-card {
+    background: var(--cream);
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .module-card:hover {
+    background: var(--cream-dark);
+  }
+
+  .module-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 72px;
+    font-weight: 900;
+    color: rgba(13,27,42,0.06);
+    position: absolute;
+    top: 16px;
+    right: 24px;
+    line-height: 1;
+    transition: color 0.3s;
+  }
+  .module-card:hover .module-number {
+    color: rgba(201,168,76,0.15);
+  }
+
+  .module-icon {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .module-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .module-desc {
+    font-size: 14px;
+    line-height: 1.65;
+    color: rgba(13,27,42,0.6);
+  }
+
+  /* ─── MENTOR SECTION ─── */
+  .mentor-section {
+    padding: 120px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: center;
+  }
+
+  .mentor-visual {
+    position: relative;
+  }
+
+  .mentor-card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 48px;
+    position: relative;
+  }
+  .mentor-card::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 48px;
+    right: 48px;
+    height: 3px;
+    background: var(--gold);
+  }
+
+  .mentor-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .mentor-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+  }
+
+  .mentor-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-style: italic;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.75);
+    border-left: 2px solid var(--gold);
+    padding-left: 20px;
+  }
+
+  .contact-chips {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+  }
+  .chip-icon {
+    width: 32px;
+    height: 32px;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .chip a {
+    color: var(--gold);
+    text-decoration: none;
+  }
+  .chip a:hover { text-decoration: underline; }
+
+  .mentor-text .section-label { color: var(--gold); }
+
+  .mentor-body {
+    font-size: 16px;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.65);
+    margin-top: 24px;
+  }
+  .mentor-body strong { color: var(--white); font-weight: 500; }
+
+  /* ─── CTA FINAL ─── */
+  .cta-final {
+    background: var(--gold);
+    color: var(--navy);
+    padding: 100px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-final::before {
+    content: 'IB';
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: 400px;
+    font-weight: 900;
+    opacity: 0.06;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .cta-final-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 5vw, 68px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .cta-final-sub {
+    font-size: 17px;
+    opacity: 0.7;
+    max-width: 480px;
+    margin: 0 auto 48px;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  .btn-dark {
+    display: inline-block;
+    background: var(--navy);
+    color: var(--gold);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 20px 48px;
+    text-decoration: none;
+    transition: transform 0.2s, background 0.2s;
+    position: relative;
+  }
+  .btn-dark:hover {
+    transform: translateY(-3px);
+    background: #0a1520;
+  }
+
+  .fine-print {
+    margin-top: 20px;
+    font-size: 13px;
+    opacity: 0.5;
+    position: relative;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #080f18;
+    padding: 40px 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(255,255,255,0.25);
+    font-size: 13px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  footer strong { color: rgba(255,255,255,0.5); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeLeft {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* scroll-reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { height: 300px; }
+    .price-badge { right: 16px; bottom: -40px; }
+    .hero-left { padding: 60px 32px; }
+    .proof-bar { padding: 40px 32px; }
+    .pain-section, .mentor-section { grid-template-columns: 1fr; padding: 80px 32px; gap: 48px; }
+    .offer-section, .cta-final { padding: 80px 32px; }
+    .modules-grid { grid-template-columns: 1fr; }
+    footer { padding: 32px; flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="eyebrow">
+      <span class="eyebrow-line"></span>
+      <span class="eyebrow-text">5-Week Intensive · Limited Spots</span>
+    </div>
+
+    <h1 class="hero-headline">
+      Break into<br>
+      <em>Investment</em><br>
+      <span class="outline-text">Banking.</span>
+    </h1>
+
+    <p class="hero-sub">
+      Most candidates fail not because they're unqualified — they fail because <strong>nobody showed them how the game is played.</strong> This changes that.
+    </p>
+
+    <div class="cta-cluster">
+      <a href="mailto:shauraysinghal73@gmail.com" class="btn-primary">Reserve Your Spot →</a>
+      <a href="#what-you-get" class="btn-secondary">
+        See what's inside
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <!-- Wall Street background via CSS gradient simulation -->
+    <div style="width:100%;height:100%;background:linear-gradient(160deg, #162436 0%, #0D1B2A 30%, #1a2e42 60%, #243545 100%); position:relative;">
+      <!-- Decorative elements simulating Wall St atmosphere -->
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+        <div style="font-family:'Playfair Display',serif;font-size:clamp(90px,12vw,160px);font-weight:900;color:rgba(201,168,76,0.08);line-height:1;text-align:center;letter-spacing:-0.04em;user-select:none;">WALL<br>ST</div>
+      </div>
+      <div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(to top, var(--navy), transparent);"></div>
+    </div>
+
+    <div class="price-badge">
+      <span class="amount">$500</span>
+      <span class="label">5 Weeks · 1:1 Guidance</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TICKER ═══ -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <!-- doubled for seamless loop -->
+    <span class="ticker-item">Networking Guidance</span>
+    <span class="ticker-item">Resume Enhancement</span>
+    <span class="ticker-item">Technical Resources</span>
+    <span class="ticker-item">Behavioral Interview Prep</span>
+    <span class="ticker-item">Industry Deep Dive</span>
+    <span class="ticker-item">Mock Interviews</span>
+    <span class="ticker-item">1:1 Personal Coaching</span>
+    <span class="ticker-item">Networking Guidance</span>
+    <span class="ticker-item">Resume Enhancement</span>
+    <span class="ticker-item">Technical Resources</span>
+    <span class="ticker-item">Behavioral Interview Prep</span>
+    <span class="ticker-item">Industry Deep Dive</span>
+    <span class="ticker-item">Mock Interviews</span>
+    <span class="ticker-item">1:1 Personal Coaching</span>
+  </div>
+</div>
+
+<!-- ═══ PROOF BAR ═══ -->
+<div class="proof-bar reveal">
+  <div class="proof-item">
+    <div class="proof-number">5</div>
+    <div class="proof-label">Weeks of Intensive Prep</div>
+  </div>
+  <div class="proof-divider"></div>
+  <div class="proof-item">
+    <div class="proof-number">1:1</div>
+    <div class="proof-label">Personal Guidance</div>
+  </div>
+  <div class="proof-divider"></div>
+  <div class="proof-item">
+    <div class="proof-number">6</div>
+    <div class="proof-label">Core Focus Areas</div>
+  </div>
+  <div class="proof-divider"></div>
+  <div class="proof-item">
+    <div class="proof-number">∞</div>
+    <div class="proof-label">Access to Industry Insider</div>
+  </div>
+</div>
+
+<!-- ═══ PAIN SECTION ═══ -->
+<section class="pain-section">
+  <div class="reveal">
+    <div class="section-label">The Reality</div>
+    <h2 class="pain-headline">
+      IB recruiting is broken<br>
+      <em>for people without</em><br>
+      the right playbook.
+    </h2>
+  </div>
+
+  <ul class="pain-list">
+    <li class="pain-item reveal">
+      <div class="pain-icon">✗</div>
+      <div class="pain-item-text">
+        <strong>You're cold-emailing into the void</strong>
+        Generic outreach gets archived. You need a system that actually gets replies from bankers.
+      </div>
+    </li>
+    <li class="pain-item reveal" style="transition-delay:0.1s">
+      <div class="pain-icon">✗</div>
+      <div class="pain-item-text">
+        <strong>Your resume looks like everyone else's</strong>
+        Recruiters spend 7 seconds per resume. Yours needs to stop them cold.
+      </div>
+    </li>
+    <li class="pain-item reveal" style="transition-delay:0.2s">
+      <div class="pain-icon">✗</div>
+      <div class="pain-item-text">
+        <strong>Technical interviews are killing your offers</strong>
+        DCF, LBO, precedent transactions — knowing the concepts isn't enough. You need the language.
+      </div>
+    </li>
+    <li class="pain-item reveal" style="transition-delay:0.3s">
+      <div class="pain-icon">✗</div>
+      <div class="pain-item-text">
+        <strong>Everyone's self-studying from the same free resources</strong>
+        The candidates who land offers have someone in their corner. You can too.
+      </div>
+    </li>
+  </ul>
+</section>
+
+<!-- ═══ OFFER SECTION ═══ -->
+<section class="offer-section" id="what-you-get">
+  <div class="reveal">
+    <div class="section-label" style="color:var(--gold)">What's Inside</div>
+    <h2 class="offer-headline">
+      Everything you need to <em>compete</em> — and win.
+    </h2>
+  </div>
+
+  <div class="modules-grid">
+    <div class="module-card reveal">
+      <div class="module-number">01</div>
+      <div class="module-icon">🎯</div>
+      <h3 class="module-title">Networking That Actually Works</h3>
+      <p class="module-desc">Scripts, sequences, and strategy for reaching the right people — and turning a LinkedIn connection into a referral.</p>
+    </div>
+    <div class="module-card reveal" style="transition-delay:0.1s">
+      <div class="module-number">02</div>
+      <div class="module-icon">📄</div>
+      <h3 class="module-title">Resume Built for Recruiters</h3>
+      <p class="module-desc">Line-by-line resume review and rewrite using the formatting and language that finance recruiters are trained to look for.</p>
+    </div>
+    <div class="module-card reveal" style="transition-delay:0.2s">
+      <div class="module-number">03</div>
+      <div class="module-icon">📊</div>
+      <h3 class="module-title">Technical Mastery</h3>
+      <p class="module-desc">Valuation methods, financial modeling fundamentals, and the exact technical questions you'll face — answered fluently.</p>
+    </div>
+    <div class="module-card reveal" style="transition-delay:0.1s">
+      <div class="module-number">04</div>
+      <div class="module-icon">🧠</div>
+      <h3 class="module-title">Behavioral Storytelling</h3>
+      <p class="module-desc">Craft your "Why IB?" and key stories using proven frameworks. Authentic, compelling, and memorable.</p>
+    </div>
+    <div class="module-card reveal" style="transition-delay:0.2s">
+      <div class="module-number">05</div>
+      <div class="module-icon">🏦</div>
+      <h3 class="module-title">Industry Deep Dive</h3>
+      <p class="module-desc">Coverage groups, deal types, league tables, current market dynamics — speak the language from day one.</p>
+    </div>
+    <div class="module-card reveal" style="transition-delay:0.3s">
+      <div class="module-number">06</div>
+      <div class="module-icon">🎤</div>
+      <h3 class="module-title">Live Mock Interviews</h3>
+      <p class="module-desc">Real-time feedback on your answers, delivery, and presence. Practice until the nerves become confidence.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MENTOR SECTION ═══ -->
+<section class="mentor-section">
+  <div class="mentor-visual reveal">
+    <div class="mentor-card">
+      <h3 class="mentor-name">Shaurya Singhal</h3>
+      <div class="mentor-title">Your Guide Through the Process</div>
+      <blockquote class="mentor-quote">
+        "I built this because I wish someone had handed it to me. The access, the templates, the insider perspective — everything I had to piece together over years, in five focused weeks."
+      </blockquote>
+      <div class="contact-chips">
+        <div class="chip">
+          <div class="chip-icon">📞</div>
+          <a href="tel:9254288146">(925) 428-8146</a>
+        </div>
+        <div class="chip">
+          <div class="chip-icon">✉️</div>
+          <a href="mailto:shauraysinghal73@gmail.com">shauraysinghal73@gmail.com</a>
+        </div>
+        <div class="chip">
+          <div class="chip-icon">in</div>
+          <a href="https://linkedin.com/in/shauryasinghal" target="_blank">LinkedIn: Shaurya Singhal</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mentor-text reveal">
+    <div class="section-label">Why This is Different</div>
+    <h2 class="pain-headline" style="font-size:clamp(30px,3vw,44px)">
+      Not a course.<br>A <em>relationship.</em>
+    </h2>
+    <p class="mentor-body">
+      Online courses give you content. This gives you <strong>a person in your corner.</strong>
+      <br><br>
+      Every week, we work on your specific situation — your background, your target firms, your gaps. There's no one-size-fits-all playbook here. There's <em>your</em> playbook.
+      <br><br>
+      For <strong>$500 over 5 weeks</strong>, you get access that most candidates would pay 10x for through prep firms — or never get at all.
+    </p>
+    <br><br>
+    <a href="mailto:shauraysinghal73@gmail.com" class="btn-primary" style="display:inline-block">Book a Free 15-Min Call →</a>
+  </div>
+</section>
+
+<!-- ═══ FINAL CTA ═══ -->
+<section class="cta-final">
+  <h2 class="cta-final-headline reveal">
+    Your offer is waiting.<br>
+    Are you ready?
+  </h2>
+  <p class="cta-final-sub reveal">Spots are limited by design — this is 1:1, not a cohort. If you're serious about breaking into banking, reach out now.</p>
+  <a href="mailto:shauraysinghal73@gmail.com" class="btn-dark reveal">Get Started — $500 for 5 Weeks</a>
+  <p class="fine-print reveal">No fluff. No filler. Just the work that gets you hired.</p>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div>© 2025 <strong>Shaurya Singhal</strong> — Investment Banking Playbook</div>
+  <div>(925) 428-8146 · shauraysinghal73@gmail.com · LinkedIn: Shaurya Singhal</div>
+</footer>
+
+<script>
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
